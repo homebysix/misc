@@ -11,7 +11,7 @@ _Presented by Elliot Jordan, Senior Consultant, [Linde Group](http://www.lindegr
     - [Step One: Configuration Profile](#step-one-configuration-profile)
     - [Step Two: Smart Group](#step-two-smart-group)
     - [Step Three: Script](#step-three-script)
-        - [reissue_filevault_recovery_key.sh Example Script](https://github.com/homebysix/misc/blob/master/reissue_filevault_recovery_key.sh)
+        - [reissue_filevault_recovery_key.sh Example Script](https://github.com/homebysix/misc/blob/master/2015-01-27%20MacBrained%20Reissuing%20FileVault%20Keys/reissue_filevault_recovery_key.sh)
     - [Step Four: Policy](#step-four-policy)
     - [Follow Through](#follow-through)
 
@@ -80,7 +80,7 @@ __A customized version of JAMF’s reissueKey.sh script runs on each affected Ma
     - __Fail silently__ if logo files aren’t present, or any other problems detected.
     - __Verify__ the Mac login password, with 5 chances to enter correct password.
 
-Refer to the [example script](https://github.com/homebysix/misc/blob/master/reissue_filevault_recovery_key.sh) included in this repo to get you started.
+Refer to the [example script](https://github.com/homebysix/misc/blob/master/2015-01-27%20MacBrained%20Reissuing%20FileVault%20Keys/reissue_filevault_recovery_key.sh) included in this repo to get you started.
 
 ![Script screenshot](images/script.png)
 
