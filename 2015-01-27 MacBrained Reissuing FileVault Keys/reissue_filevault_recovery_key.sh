@@ -11,14 +11,47 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-02-25
-#         Version:  1.0
+#   Last Modified:  2015-04-15
+#         Version:  1.1
 #
 ###
 
+
+################################## VARIABLES ###################################
+
+# Your company name.
+COMPANY_NAME="PretendCo"
+
+# Your company's logo, in PNG format. (For use in jamfHelper messages.)
+# Use standard UNIX path format:  /path/to/file.png
+LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
+
+# Your company's logo, in ICNS format. (For use in AppleScript messages.)
+# Use colon-separated AppleScript path format, omit leading colon:  path:to:file.icns
+LOGO_ICNS="private:tmp:PretendCo.icns"
+
+# The title of the message that will be displayed to the user.
+PROMPT_HEADING="Your Mac's encryption key needs repair"
+
+# The body of the message that will be displayed to the user.
+PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for $COMPANY_NAME IT to be able to recover your hard drive in case of emergency.
+
+Click the Next button below, then enter your Mac's password when prompted."
+
+# Path to jamfHelper.
+jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
+
+
+################################################################################
+######################### DO NOT EDIT BELOW THIS LINE ##########################
+################################################################################
+
+
+######################## VALIDATION AND ERROR CHECKING #########################
+
 # Make sure the custom logo has been received successfully
-if [[ ! -f "/tmp/PretendCo.icns" ]]; then
-    echo "Custom icon not present."
+if [[ ! -f "/${LOGO_ICNS//://}" ]]; then
+    echo "Custom icon not present: /${LOGO_ICNS//://}"
     exit 1001
 fi
 
@@ -35,9 +68,10 @@ if [ "${userCheck}" != "${userName}" ]; then
     exit 1002
 fi
 
-# Get the OS version
-OS="$(/usr/bin/sw_vers -productVersion | awk -F. '{print $2}')"
-if [[ "$OS" -lt 9 ]]; then
+# Check the OS version.
+OS_major=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $1}')
+OS_minor=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $2}')
+if [[ "$OS_major" -ne 10 || "$OS_minor" -lt 9 ]]; then
     echo "OS version not 10.9+ or OS version unrecognized."
     /usr/bin/sw_vers -productVersion
     exit 1003
@@ -59,27 +93,24 @@ elif [[ "$(echo "${encryptCheck}" | grep -c "FileVault is On")" -eq 0 ]]; then
     exit 1006
 fi
 
+
+################################# MAIN PROCESS #################################
+
 # Display a branded prompt explaining the password prompt.
 echo "Alerting user ${userName} about incoming password prompt..."
-LOGO="/Library/Application Support/.pinadmin/logo@512px.png"
-PROMPT_HEADING="Your Mac's encryption key needs repair"
-PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for PretendCo IT to be able to recover your hard drive in case of emergency.
 
-Click the Next button below, then enter your Mac's password when prompted."
-jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
-
-"$jamfHelper" -windowType hud -lockHUD -icon "$LOGO" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1
+"$jamfHelper" -windowType hud -lockHUD -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password (try 0)..."
-userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "PretendCo IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "private:tmp:PretendCo.icns"' -e 'text returned of result')"
+userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "$COMPANY_NAME IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "$LOGO_ICNS"' -e 'text returned of result')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=0
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     let TRY++
     echo "Prompting ${userName} for their Mac password (try $TRY)..."
-    userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "PretendCo IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "private:tmp:PretendCo.icns"' -e 'text returned of result')"
+    userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "$COMPANY_NAME IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "$LOGO_ICNS"' -e 'text returned of result')"
     if [[ $TRY -ge 4 ]]; then
         echo "Password prompt unsuccessful after 5 attempts."
         exit 1007
