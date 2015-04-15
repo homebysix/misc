@@ -12,7 +12,7 @@
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
 #   Last Modified:  2015-04-15
-#         Version:  1.1
+#         Version:  1.1.1
 #
 ###
 
@@ -103,14 +103,14 @@ echo "Alerting user ${userName} about incoming password prompt..."
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password (try 0)..."
-userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "$COMPANY_NAME IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "$LOGO_ICNS"' -e 'text returned of result')"
+userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=0
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     let TRY++
     echo "Prompting ${userName} for their Mac password (try $TRY)..."
-    userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "$COMPANY_NAME IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "$LOGO_ICNS"' -e 'text returned of result')"
+    userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
     if [[ $TRY -ge 4 ]]; then
         echo "Password prompt unsuccessful after 5 attempts."
         exit 1007
