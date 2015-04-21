@@ -11,8 +11,8 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-04-15
-#         Version:  1.1.1
+#   Last Modified:  2015-04-17
+#         Version:  1.1.2
 #
 ###
 
@@ -30,7 +30,7 @@ LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
 # Use colon-separated AppleScript path format, omit leading colon:  path:to:file.icns
 LOGO_ICNS="private:tmp:PretendCo.icns"
 
-# The title of the message that will be displayed to the user.
+# The title of the message that will be displayed to the user. Not too long, or it'll get clipped.
 PROMPT_HEADING="Your Mac's encryption key needs repair"
 
 # The body of the message that will be displayed to the user.
