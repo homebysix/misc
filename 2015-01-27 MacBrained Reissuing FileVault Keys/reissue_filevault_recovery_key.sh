@@ -11,8 +11,8 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-04-17
-#         Version:  1.1.2
+#   Last Modified:  2015-05-19
+#         Version:  1.2
 #
 ###
 
@@ -31,7 +31,7 @@ LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
 LOGO_ICNS="private:tmp:PretendCo.icns"
 
 # The title of the message that will be displayed to the user. Not too long, or it'll get clipped.
-PROMPT_HEADING="Your Mac's encryption key needs repair"
+PROMPT_HEADING="FileVault key needs repair"
 
 # The body of the message that will be displayed to the user.
 PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for $COMPANY_NAME IT to be able to recover your hard drive in case of emergency.
@@ -99,19 +99,19 @@ fi
 # Display a branded prompt explaining the password prompt.
 echo "Alerting user ${userName} about incoming password prompt..."
 
-"$jamfHelper" -windowType hud -lockHUD -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1
+"$jamfHelper" -windowType hud -windowPosition ur -lockHUD -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd
 
 # Get the logged in user's password via a prompt
-echo "Prompting ${userName} for their Mac password (try 0)..."
+echo "Prompting ${userName} for their Mac password..."
 userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
 
 # Thanks to James Barclay for this password validation loop.
-TRY=0
+TRY=1
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
-    let TRY++
-    echo "Prompting ${userName} for their Mac password (try $TRY)..."
+    (( TRY++ ))
+    echo "Prompting ${userName} for their Mac password (attempt $TRY)..."
     userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
-    if [[ $TRY -ge 4 ]]; then
+    if [[ $TRY -ge 5 ]]; then
         echo "Password prompt unsuccessful after 5 attempts."
         exit 1007
     fi
@@ -119,16 +119,19 @@ done
 echo "Successfully prompted for Mac password."
 
 echo "Issuing new recovery key..."
+fdesetup changerecovery -personal -inputplist << EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Username</key>
+    <string>$userName</string>
+    <key>Password</key>
+    <string>$userPass</string>
+</dict>
+</plist>
+EOF
 
-# This "expect" block will populate answers for the fdesetup prompts that normally occur while hiding them from output
-expect -c "
-log_user 0
-spawn /usr/bin/fdesetup changerecovery -personal
-expect \"Enter a password for '/', or the recovery key:\"
-send "${userPass}"\r
-log_user 1
-expect eof
-"
 if [[ $? -ne 0 ]]; then
     echo "Error while reissuing recovery key."
     exit 1008
