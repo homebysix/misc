@@ -12,7 +12,7 @@
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
 #   Last Modified:  2015-05-19
-#         Version:  1.2
+#         Version:  1.3
 #
 ###
 
@@ -49,30 +49,24 @@ jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/
 
 ######################## VALIDATION AND ERROR CHECKING #########################
 
+
+# Suppress errors for the duration of this script.
+exec 2>/dev/null
+
 # Make sure the custom logo has been received successfully
 if [[ ! -f "/${LOGO_ICNS//://}" ]]; then
-    echo "Custom icon not present: /${LOGO_ICNS//://}"
+    echo "[ERROR] Custom icon not present: /${LOGO_ICNS//://}"
     exit 1001
 fi
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
 
-# Get the logged in user's name
-userName="$(/usr/bin/stat -f%Su /dev/console)"
-
-# This first user check sees if the logged in account is already authorized with FileVault 2
-userCheck="$(/usr/bin/fdesetup list | awk -v usrN="$userName" -F, 'index($0, usrN) {print $1}')"
-if [ "${userCheck}" != "${userName}" ]; then
-    echo "This user is not a FileVault 2 enabled user."
-    exit 1002
-fi
-
 # Check the OS version.
 OS_major=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $1}')
 OS_minor=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $2}')
 if [[ "$OS_major" -ne 10 || "$OS_minor" -lt 9 ]]; then
-    echo "OS version not 10.9+ or OS version unrecognized."
+    echo "[ERROR] OS version not 10.9+ or OS version unrecognized."
     /usr/bin/sw_vers -productVersion
     exit 1003
 fi
@@ -80,19 +74,30 @@ fi
 # Check to see if the encryption process is complete
 encryptCheck="$(/usr/bin/fdesetup status)"
 if [[ "$(echo "${encryptCheck}" | grep -c "Encryption in progress")" -gt 0 ]]; then
-    echo "The encryption process is still in progress."
+    echo "[ERROR] The encryption process is still in progress."
     echo "${encryptCheck}"
     exit 1004
 elif [[ "$(echo "${encryptCheck}" | grep -c "FileVault is Off")" -gt 0 ]]; then
-    echo "Encryption is not active."
+    echo "[ERROR] Encryption is not active."
     echo "${encryptCheck}"
     exit 1005
 elif [[ "$(echo "${encryptCheck}" | grep -c "FileVault is On")" -eq 0 ]]; then
-    echo "Unable to determine encryption status."
+    echo "[ERROR] Unable to determine encryption status."
     echo "${encryptCheck}"
     exit 1006
 fi
 
+# Get the logged in user's name
+userName="$(/usr/bin/stat -f%Su /dev/console)"
+
+# This first user check sees if the logged in account is already authorized with FileVault 2
+userCheck="$(/usr/bin/fdesetup list)"
+echo "$userCheck" | egrep -q "^${userName},"
+if [[ $? -ne 0 ]]; then
+    echo "[ERROR] $userName is not on the list of FileVault enabled users:"
+    echo "$userCheck"
+    exit 1002
+fi
 
 ################################# MAIN PROCESS #################################
 
@@ -112,14 +117,17 @@ until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     echo "Prompting ${userName} for their Mac password (attempt $TRY)..."
     userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
     if [[ $TRY -ge 5 ]]; then
-        echo "Password prompt unsuccessful after 5 attempts."
+        echo "[ERROR] Password prompt unsuccessful after 5 attempts."
         exit 1007
     fi
 done
 echo "Successfully prompted for Mac password."
 
+echo "Unloading FDERecoveryAgent..."
+launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
+
 echo "Issuing new recovery key..."
-fdesetup changerecovery -personal -inputplist << EOF
+fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -133,8 +141,11 @@ fdesetup changerecovery -personal -inputplist << EOF
 EOF
 
 if [[ $? -ne 0 ]]; then
-    echo "Error while reissuing recovery key."
-    exit 1008
+    echo "[WARNING] fdesetup did not return exit code 0."
 fi
+
+echo "Loading FDERecoveryAgent..."
+# `fdesetup changerecovery` should do this automatically, but just in case...
+launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist &>/dev/null
 
 exit 0
