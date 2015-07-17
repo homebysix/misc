@@ -284,6 +284,7 @@ Thank you!
 - [AutoPkg](https://autopkg.github.io/autopkg/) — The free open source command line tool that automates packaging Mac software.
 - [Munki](https://www.munki.org/) — A free open source tool for managing OS X, including the ability to easily distribute software to your fleet.
 - [MunkiAdmin](https://hjuutilainen.github.io/munkiadmin/) A free Mac app for managing Munki repositories.
+- [Munki-in-a-Box](https://github.com/tbridge/munki-in-a-box) — Shell script for easily setting up Munki for the first time. Includes AutoPkg and AutoPkgr as well.
 - [Casper](http://www.jamfsoftware.com/products/) — Popular commercial software for Mac and mobile endpoint management.
 - [JSSImporter](https://github.com/sheagcraig/JSSImporter) — AutoPkg processor that uploads packages to your JSS and creates custom policies for them.
 - [jss_helper](https://github.com/sheagcraig/jss_helper) — A command line tool for performing certain operations on your JSS.
