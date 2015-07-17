@@ -295,3 +295,4 @@ Thank you!
 - [MacPatch](https://macpatch.github.io/) — Another free open source tool for managing Macs, similar to Munki in some ways.
 - [MacPatchImporter](https://github.com/SMSG-MAC-DEV/MacPatch-AutoPKG) — Processor for importing AutoPkg with MacPatch.
 - [DeployStudio](http://deploystudio.com/) — Free tool for quickly imaging and configuring Macs.
+- [xkcd: Automation](https://xkcd.com/1319/) — We love making AutoPkgr, but the ongoing development definitely offsets the time saved. :-)
