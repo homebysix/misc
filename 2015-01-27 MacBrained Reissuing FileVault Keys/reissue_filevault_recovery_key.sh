@@ -59,7 +59,7 @@ if [[ ! -f "$LOGO_ICNS" ]]; then
     exit 1001
 fi
 # Convert POSIX path of logo icon to Mac path for AppleScript
-LOGO_ICNS="$(osascript -e "POSIX file \"$LOGO_ICNS\" as text")"
+LOGO_ICNS="$(osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
