@@ -346,5 +346,5 @@ backup in YYYY-MM-DD format.
 This script displays the age (in days) of the last successful Time Machine
 backup.
 
-__Coming soon: TMNotifier__
+[TMNotifier](https://tmnotifier.com/)
 An app that automatically emails you if Time Machine backups fail.
