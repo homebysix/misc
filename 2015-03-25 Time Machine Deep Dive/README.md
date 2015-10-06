@@ -325,26 +325,26 @@ __Thank you!__
 
 ## Resources
 
-[Apple Support - Restoring OS X Server from a Time Machine backup](https://support.apple.com/en-us/HT202406)
+- [Apple Support - Restoring OS X Server from a Time Machine backup](https://support.apple.com/en-us/HT202406)
 
-[Apple OS X and Time Machine Tips](http://pondini.org/OSX/Home.html)
-Especially: ["Reconnecting" to your backups](http://pondini.org/TM/B6.html)
+- [Apple OS X and Time Machine Tips](http://pondini.org/OSX/Home.html)
+    Especially: ["Reconnecting" to your backups](http://pondini.org/TM/B6.html)
 
-[Code42 - CrashPlan](https://www.code42.com/crashplan/)
+- [Code42 - CrashPlan](https://www.code42.com/crashplan/)
 
-[Carbon Copy Cloner](http://bombich.com/)
+- [Carbon Copy Cloner](http://bombich.com/)
 
-[Bender (Automatic OS X Server settings backup)](http://robotcloud.screenstepslive.com/s/2459/m/5322/l/94467-bender-automated-backup-of-os-x-server-settings)
+- [Bender (Automatic OS X Server settings backup)](http://robotcloud.screenstepslive.com/s/2459/m/5322/l/94467-bender-automated-backup-of-os-x-server-settings)
 
-[Krypted - Time Machine](http://krypted.com/category/time-machine/)
+- [Krypted - Time Machine](http://krypted.com/category/time-machine/)
 
-[`tm_last_backup_date.sh` Script](tm_last_backup_date.sh)
-This script displays the date of the last successful Time Machine
+- [`tm_last_backup_date.sh` Script](tm_last_backup_date.sh)
+    This script displays the date of the last successful Time Machine
 backup in YYYY-MM-DD format.
 
-[`tm_last_backup_age.sh` Script](tm_last_backup_age.sh)
-This script displays the age (in days) of the last successful Time Machine
+- [`tm_last_backup_age.sh` Script](tm_last_backup_age.sh)
+    This script displays the age (in days) of the last successful Time Machine
 backup.
 
-[TMNotifier](https://tmnotifier.com/)
-An app that automatically emails you if Time Machine backups fail.
+- [TMNotifier](https://tmnotifier.com/)
+    An app that automatically emails you if Time Machine backups fail.
