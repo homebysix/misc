@@ -11,8 +11,8 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-05-19
-#         Version:  1.3
+#   Last Modified:  2015-10-29
+#         Version:  1.4
 #
 ###
 
