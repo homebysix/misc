@@ -11,32 +11,25 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-10-29
-#         Version:  1.4
+#   Last Modified:  2015-05-19
+#         Version:  1.3
 #
 ###
 
 
 ################################## VARIABLES ###################################
 
-# Your company name.
-COMPANY_NAME="PretendCo"
-
-# Your company's logo, in PNG format. (For use in jamfHelper messages.)
 # Use standard UNIX path format:  /path/to/file.png
-LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
+LOGO_PNG="/Library/Application Support/FileVault 2 Rekey/filevault.png"
 
-# Your company's logo, in ICNS format. (For use in AppleScript messages.)
-# Use standard UNIX path format:  /path/to/file.icns
-LOGO_ICNS="/private/tmp/PretendCo.icns"
+# Use colon-separated AppleScript path format, omit leading colon:  path:to:file.icns
+LOGO_ICNS="Library:Application Support:FileVault 2 Rekey:filevault.icns"
 
 # The title of the message that will be displayed to the user. Not too long, or it'll get clipped.
-PROMPT_HEADING="FileVault key needs repair"
+PROMPT_HEADING="Reissue FileVault 2 Key"
 
 # The body of the message that will be displayed to the user.
-PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for $COMPANY_NAME IT to be able to recover your hard drive in case of emergency.
-
-Click the Next button below, then enter your Mac's password when prompted."
+PROMPT_MESSAGE="Press next, and then enter your Mac account password when prompted to reissue your FileVault key."
 
 # Path to jamfHelper.
 jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
@@ -54,12 +47,10 @@ jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/
 exec 2>/dev/null
 
 # Make sure the custom logo has been received successfully
-if [[ ! -f "$LOGO_ICNS" ]]; then
-    echo "[ERROR] Custom icon not present: $LOGO_ICNS"
+if [[ ! -f "/${LOGO_ICNS//://}" ]]; then
+    echo "[ERROR] Custom icon not present: /${LOGO_ICNS//://}"
     exit 1001
 fi
-# Convert POSIX path of logo icon to Mac path for AppleScript
-LOGO_ICNS="$(osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
@@ -90,7 +81,7 @@ elif [[ "$(echo "${encryptCheck}" | grep -c "FileVault is On")" -eq 0 ]]; then
 fi
 
 # Get the logged in user's name
-userName="$(/usr/bin/stat -f%Su /dev/console)"
+userName="$(python -c 'from SystemConfiguration import SCDynamicStoreCopyConsoleUser; import sys; username = (SCDynamicStoreCopyConsoleUser(None, None, None) or [None])[0]; username = [username,""][username in [u"loginwindow", None, u""]]; sys.stdout.write(username + "\n");')"
 
 # This first user check sees if the logged in account is already authorized with FileVault 2
 userCheck="$(/usr/bin/fdesetup list)"
@@ -110,14 +101,14 @@ echo "Alerting user ${userName} about incoming password prompt..."
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password..."
-userPass="$(/usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Please enter your Mac password:" default answer "" with title "FileVault Rekey" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=1
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     (( TRY++ ))
     echo "Prompting ${userName} for their Mac password (attempt $TRY)..."
-    userPass="$(/usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+    userPass="$(/usr/bin/osascript -e 'tell application "System Events" to display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "Filevault Rekey" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'text returned of result')"
     if [[ $TRY -ge 5 ]]; then
         echo "[ERROR] Password prompt unsuccessful after 5 attempts."
         exit 1007
