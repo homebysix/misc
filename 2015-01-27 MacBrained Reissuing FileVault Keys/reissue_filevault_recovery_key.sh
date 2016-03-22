@@ -11,8 +11,8 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-10-29
-#         Version:  1.4
+#   Last Modified:  2016-03-22
+#         Version:  1.5
 #
 ###
 
@@ -129,18 +129,24 @@ echo "Unloading FDERecoveryAgent..."
 launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
 
 echo "Issuing new recovery key..."
-fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Username</key>
-    <string>$userName</string>
-    <key>Password</key>
-    <string>$userPass</string>
-</dict>
-</plist>
-EOF
+
+# This is code from https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
+# The previous code did not handle & in a password and I'd expect other reserved charactors in XML.
+# I added catch wait result and exit lines to properly output the error code from the fdesetup command.
+# I added >/dev/null to the end to supress the key from being displayed in the policy log.
+## This "expect" block will populate answers for the fdesetup prompts that normally occur while hiding them from output
+	expect -c "
+	log_user 0
+	spawn fdesetup changerecovery -personal
+	expect \"Enter a password for '/', or the recovery key:\"
+	send "{${userPass}}"
+	send \r
+	log_user 1
+	expect eof
+	catch wait result
+	exit [lindex \$result 3]
+	" >/dev/null
+
 
 if [[ $? -ne 0 ]]; then
     echo "[WARNING] fdesetup did not return exit code 0."
