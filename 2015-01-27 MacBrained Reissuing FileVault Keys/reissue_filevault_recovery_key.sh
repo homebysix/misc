@@ -11,8 +11,8 @@
 #                   for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2015-10-29
-#         Version:  1.4
+#   Last Modified:  2016-04-01
+#         Version:  1.5
 #
 ###
 
@@ -59,7 +59,7 @@ if [[ ! -f "$LOGO_ICNS" ]]; then
     exit 1001
 fi
 # Convert POSIX path of logo icon to Mac path for AppleScript
-LOGO_ICNS="$(osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
+LOGO_ICNS="$(/usr/bin/osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
@@ -110,14 +110,14 @@ echo "Alerting user ${userName} about incoming password prompt..."
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password..."
-userPass="$(/usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=1
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     (( TRY++ ))
     echo "Prompting ${userName} for their Mac password (attempt $TRY)..."
-    userPass="$(/usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+    userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
     if [[ $TRY -ge 5 ]]; then
         echo "[ERROR] Password prompt unsuccessful after 5 attempts."
         exit 1007
