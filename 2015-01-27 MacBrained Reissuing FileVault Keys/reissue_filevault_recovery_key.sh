@@ -145,12 +145,13 @@ fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
 </plist>
 EOF
 
-if [[ $? -ne 0 ]]; then
-    echo "[WARNING] fdesetup did not return exit code 0."
+result=$?
+if [[ $result -ne 0 ]]; then
+    echo "[WARNING] fdesetup exited with return code: $result."
 fi
 
 echo "Loading FDERecoveryAgent..."
 # `fdesetup changerecovery` should do this automatically, but just in case...
 launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist &>/dev/null
 
-exit 0
+exit $result
