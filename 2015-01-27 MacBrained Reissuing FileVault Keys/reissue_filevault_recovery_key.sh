@@ -154,4 +154,4 @@ echo "Loading FDERecoveryAgent..."
 # `fdesetup changerecovery` should do this automatically, but just in case...
 launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist &>/dev/null
 
-exit 0
+exit $result
