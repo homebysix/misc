@@ -157,6 +157,7 @@ echo "Successfully prompted for Mac password."
 FDERA=false
 if launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
     FDERA=true
+    echo "Unloading FDERecoveryAgent..."
     launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
 fi
 
@@ -199,6 +200,7 @@ if [[ "$FDERA" == "true" ]]; then
     sleep 2
     # Only if it wasn't automatically reloaded by `fdesetup`.
     if ! launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
+        echo "Loading FDERecoveryAgent..."
         launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
     fi
 fi
