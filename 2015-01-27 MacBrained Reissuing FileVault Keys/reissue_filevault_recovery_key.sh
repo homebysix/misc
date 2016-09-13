@@ -145,8 +145,13 @@ until dscl /Search -authonly "$CURRENT_USER" "$USER_PASS" &>/dev/null; do
 done
 echo "Successfully prompted for Mac password."
 
-echo "Unloading FDERecoveryAgent..."
-launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
+# If needed, unload FDERecoveryAgent and remember to reload later.
+FDERA=false
+if launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
+    FDERA=true
+    echo "Unloading FDERecoveryAgent..."
+    launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
+fi
 
 echo "Issuing new recovery key..."
 # Translate XML reserved characters to XML friendly representations.
@@ -170,8 +175,16 @@ if [[ $RESULT -ne 0 ]]; then
     echo "[WARNING] fdesetup exited with return code: $RESULT."
 fi
 
-echo "Loading FDERecoveryAgent..."
-# `fdesetup changerecovery` should do this automatically, but just in case...
-launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist &>/dev/null
+# Reload FDERecoveryAgent, if it was unloaded earlier.
+if [[ "$FDERA" == "true" ]]; then
+    sleep 2
+    # Only if it wasn't automatically reloaded by `fdesetup`.
+    if ! launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
+        echo "FDERecoveryAgent wasn't reloaded automatically. Loading now..."
+        launchctl load /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
+    else
+        echo "FDERecoveryAgent was reloaded automatically."
+    fi
+fi
 
 exit $RESULT
