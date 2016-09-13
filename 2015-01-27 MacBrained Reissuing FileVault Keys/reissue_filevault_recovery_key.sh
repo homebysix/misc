@@ -50,10 +50,12 @@ Click the Next button below, then enter your Mac's password when prompted."
 # appear in the script output.)
 exec 2>/dev/null
 
+BAIL=false
+
 # Make sure the custom logo has been received successfully
 if [[ ! -f "$LOGO_ICNS" ]]; then
     echo "[ERROR] Custom icon not present: $LOGO_ICNS"
-    exit 1001
+    BAIL=true
 fi
 # Convert POSIX path of logo icon to Mac path for AppleScript
 LOGO_ICNS="$(/usr/bin/osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
@@ -62,7 +64,7 @@ LOGO_ICNS="$(/usr/bin/osascript -e 'tell application "System Events" to return P
 jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
 if [[ ! -x "$jamfHelper" ]]; then
     echo "[ERROR] jamfHelper not found."
-    exit 1
+    BAIL=true
 fi
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
@@ -74,7 +76,7 @@ OS_MINOR=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $2}')
 if [[ "$OS_MAJOR" -ne 10 || "$OS_MINOR" -lt 9 ]]; then
     echo "[ERROR] OS version not 10.9+ or OS version unrecognized."
     /usr/bin/sw_vers -productVersion
-    exit 1003
+    BAIL=true
 fi
 
 # Check to see if the encryption process is complete
@@ -82,15 +84,15 @@ FV_STATUS="$(/usr/bin/fdesetup status)"
 if grep -q "Encryption in progress" <<< "$FV_STATUS"; then
     echo "[ERROR] The encryption process is still in progress."
     echo "$FV_STATUS"
-    exit 1004
+    BAIL=true
 elif grep -q "FileVault is Off" <<< "$FV_STATUS"; then
     echo "[ERROR] Encryption is not active."
     echo "$FV_STATUS"
-    exit 1005
+    BAIL=true
 elif ! grep -q "FileVault is On" <<< "$FV_STATUS"; then
     echo "[ERROR] Unable to determine encryption status."
     echo "$FV_STATUS"
-    exit 1006
+    BAIL=true
 fi
 
 # Get the logged in user's name
@@ -101,7 +103,12 @@ FV_USERS="$(/usr/bin/fdesetup list)"
 if ! egrep -q "^${CURRENT_USER}," <<< "$FV_USERS"; then
     echo "[ERROR] $CURRENT_USER is not on the list of FileVault enabled users:"
     echo "$FV_USERS"
-    exit 1002
+    BAIL=true
+fi
+
+# If any error occurred above, bail out.
+if [[ "$BAIL" == "true" ]]; then
+    exit 1
 fi
 
 ################################ MAIN PROCESS #################################
@@ -133,7 +140,7 @@ until dscl /Search -authonly "$CURRENT_USER" "$USER_PASS" &>/dev/null; do
     USER_PASS="$(launchctl "$L_METHOD" "$L_ID" osascript -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" giving up after 86400 with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result')"
     if (( TRY >= 5 )); then
         echo "[ERROR] Password prompt unsuccessful after 5 attempts."
-        exit 1007
+        exit 1
     fi
 done
 echo "Successfully prompted for Mac password."
