@@ -112,17 +112,27 @@ echo "Alerting user $CURRENT_USER about incoming password prompt..."
 
 "$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd &>/dev/null
 
-# Get the logged in user's password via a prompt
+# Get information necessary to run osascript in user context.
+USER_ID=$(id -u "$CURRENT_USER")
+if [[ "$OS_MAJOR" -eq 10 && "$OS_MINOR" -le 9 ]]; then
+    L_ID=$(pgrep -x -u "$USER_ID" loginwindow)
+    L_METHOD="bsexec"
+elif [[ "$OS_MAJOR" -eq 10 && "$OS_MINOR" -gt 9 ]]; then
+    L_ID=USER_ID
+    L_METHOD="asuser"
+fi
+
+# Get the logged in user's password via a prompt.
 echo "Prompting $CURRENT_USER for their Mac password..."
-USER_PASS="$(/usr/bin/sudo -u "$CURRENT_USER" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+USER_PASS="$(launchctl "$L_METHOD" "$L_ID" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=1
 until dscl /Search -authonly "$CURRENT_USER" "$USER_PASS" &> /dev/null; do
     (( TRY++ ))
     echo "Prompting $CURRENT_USER for their Mac password (attempt $TRY)..."
-    USER_PASS="$(/usr/bin/sudo -u "$CURRENT_USER" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
     if [[ $TRY -ge 5 ]]; then
+    USER_PASS="$(launchctl "$L_METHOD" "$L_ID" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
         echo "[ERROR] Password prompt unsuccessful after 5 attempts."
         exit 1007
     fi
