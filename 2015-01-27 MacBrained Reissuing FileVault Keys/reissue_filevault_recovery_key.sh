@@ -79,15 +79,15 @@ fi
 
 # Check to see if the encryption process is complete
 FV_STATUS="$(/usr/bin/fdesetup status)"
-if [[ "$(echo "$FV_STATUS" | grep -c "Encryption in progress")" -gt 0 ]]; then
+if grep -q "Encryption in progress" <<< "$FV_STATUS"; then
     echo "[ERROR] The encryption process is still in progress."
     echo "$FV_STATUS"
     exit 1004
-elif [[ "$(echo "$FV_STATUS" | grep -c "FileVault is Off")" -gt 0 ]]; then
+elif grep -q "FileVault is Off" <<< "$FV_STATUS"; then
     echo "[ERROR] Encryption is not active."
     echo "$FV_STATUS"
     exit 1005
-elif [[ "$(echo "$FV_STATUS" | grep -c "FileVault is On")" -eq 0 ]]; then
+elif ! grep -q "FileVault is On" <<< "$FV_STATUS"; then
     echo "[ERROR] Unable to determine encryption status."
     echo "$FV_STATUS"
     exit 1006
@@ -98,8 +98,7 @@ CURRENT_USER="$(/usr/bin/stat -f%Su /dev/console)"
 
 # This first user check sees if the logged in account is already authorized with FileVault 2
 FV_USERS="$(/usr/bin/fdesetup list)"
-echo "$FV_USERS" | egrep -q "^$CURRENT_USER,"
-if [[ $? -ne 0 ]]; then
+if ! egrep -q "^${CURRENT_USER}," <<< "$FV_USERS"; then
     echo "[ERROR] $CURRENT_USER is not on the list of FileVault enabled users:"
     echo "$FV_USERS"
     exit 1002
