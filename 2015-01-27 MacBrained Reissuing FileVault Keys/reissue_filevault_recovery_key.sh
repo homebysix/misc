@@ -113,12 +113,7 @@ fi
 
 ################################ MAIN PROCESS #################################
 
-# Display a branded prompt explaining the password prompt.
-echo "Alerting user $CURRENT_USER about incoming password prompt..."
-
-"$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -title "$PROMPT_TITLE" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd &>/dev/null
-
-# Get information necessary to run osascript in user context.
+# Get information necessary to display messages in the current user's context.
 USER_ID=$(id -u "$CURRENT_USER")
 if [[ "$OS_MAJOR" -eq 10 && "$OS_MINOR" -le 9 ]]; then
     L_ID=$(pgrep -x -u "$USER_ID" loginwindow)
@@ -127,6 +122,10 @@ elif [[ "$OS_MAJOR" -eq 10 && "$OS_MINOR" -gt 9 ]]; then
     L_ID=USER_ID
     L_METHOD="asuser"
 fi
+
+# Display a branded prompt explaining the password prompt.
+echo "Alerting user $CURRENT_USER about incoming password prompt..."
+launchctl "$L_METHOD" "$L_ID" "$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -title "$PROMPT_TITLE" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd &>/dev/null
 
 # Get the logged in user's password via a prompt.
 echo "Prompting $CURRENT_USER for their Mac password..."
