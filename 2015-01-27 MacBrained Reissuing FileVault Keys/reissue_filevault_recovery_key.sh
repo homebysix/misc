@@ -181,12 +181,14 @@ EOF
 
 # Test success conditions.
 FDESETUP_RESULT=$?
-echo "$FDESETUP_OUTPUT"
-ESCROW_STATUS=$(grep -q "Escrowing recovery key..." <<< "$FDESETUP_OUTPUT")
+grep -q "Escrowing recovery key..." <<< "$FDESETUP_OUTPUT"
+ESCROW_STATUS=$?
 if [[ $FDESETUP_RESULT -ne 0 ]]; then
     echo "[WARNING] fdesetup exited with return code: $FDESETUP_RESULT."
+    echo "$FDESETUP_OUTPUT"
 elif [[ $ESCROW_STATUS -ne 0 ]]; then
     echo "[WARNING] FileVault key was generated, but escrow did not occur."
+    echo "$FDESETUP_OUTPUT"
 else
     echo "Displaying \"success\" message..."
     launchctl "$L_METHOD" "$L_ID" "$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -title "$PROMPT_TITLE" -description "$SUCCESS_MESSAGE" -button1 'OK' -defaultButton 1 -timeout 30 -startlaunchd &>/dev/null &
