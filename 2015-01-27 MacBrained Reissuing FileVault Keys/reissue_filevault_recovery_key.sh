@@ -158,11 +158,12 @@ if launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
     launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
 fi
 
-echo "Issuing new recovery key..."
 # Translate XML reserved characters to XML friendly representations.
 # Thanks @AggroBoy! - https://gist.github.com/AggroBoy/1242257
 USER_PASS_XML=$(echo "$USER_PASS" | sed -e 's~&~\&amp;~g' -e 's~<~\&lt;~g' -e 's~>~\&gt;~g' -e 's~\"~\&quot;~g' -e "s~\'~\&apos;~g" )
-fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
+
+echo "Issuing new recovery key..."
+FDESETUP_OUTPUT="$(fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -174,10 +175,17 @@ fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
 </dict>
 </plist>
 EOF
+)"
 
-RESULT=$?
-if [[ $RESULT -ne 0 ]]; then
-    echo "[WARNING] fdesetup exited with return code: $RESULT."
+# Test success conditions.
+FDESETUP_RESULT=$?
+echo "$FDESETUP_OUTPUT"
+ESCROW_STATUS=$(grep -q "Escrowing recovery key..." <<< "$FDESETUP_OUTPUT")
+if [[ $FDESETUP_RESULT -ne 0 ]]; then
+    echo "[WARNING] fdesetup exited with return code: $FDESETUP_RESULT."
+elif [[ $ESCROW_STATUS -ne 0 ]]; then
+    echo "[WARNING] FileVault key was generated, but escrow did not occur."
+else
     echo "Displaying \"success\" message..."
     launchctl "$L_METHOD" "$L_ID" "$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -title "$PROMPT_TITLE" -description "$SUCCESS_MESSAGE" -button1 'OK' -defaultButton 1 -timeout 30 -startlaunchd &>/dev/null &
 fi
@@ -191,4 +199,4 @@ if [[ "$FDERA" == "true" ]]; then
     fi
 fi
 
-exit $RESULT
+exit $FDESETUP_RESULT
