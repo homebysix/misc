@@ -103,7 +103,7 @@ fi
 # Display a branded prompt explaining the password prompt.
 echo "Alerting user ${userName} about incoming password prompt..."
 
-"$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd
+"$jamfHelper" -windowType "utility" -icon "$LOGO_PNG" -heading "$PROMPT_HEADING" -description "$PROMPT_MESSAGE" -button1 "Next" -defaultButton 1 -startlaunchd &>/dev/null
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password..."
