@@ -36,9 +36,6 @@ PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in o
 
 Click the Next button below, then enter your Mac's password when prompted."
 
-# Path to jamfHelper.
-jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
-
 
 ###############################################################################
 ######################### DO NOT EDIT BELOW THIS LINE #########################
@@ -46,7 +43,6 @@ jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/
 
 
 ######################## VALIDATION AND ERROR CHECKING ########################
-
 
 # Suppress errors for the duration of this script. (This prevents Casper from
 # marking a policy as "failed" if the words "fail" or "error" inadvertently
@@ -60,6 +56,13 @@ if [[ ! -f "$LOGO_ICNS" ]]; then
 fi
 # Convert POSIX path of logo icon to Mac path for AppleScript
 LOGO_ICNS="$(/usr/bin/osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
+
+# Bail out if jamfHelper doesn't exist.
+jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
+if [[ ! -x "$jamfHelper" ]]; then
+    echo "[ERROR] jamfHelper not found."
+    exit 1
+fi
 
 # Most of the code below is based on the JAMF reissueKey.sh script:
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
