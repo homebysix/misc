@@ -19,9 +19,6 @@
 
 ################################## VARIABLES ###################################
 
-# Your company name.
-COMPANY_NAME="PretendCo"
-
 # Your company's logo, in PNG format. (For use in jamfHelper messages.)
 # Use standard UNIX path format:  /path/to/file.png
 LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
@@ -31,10 +28,10 @@ LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
 LOGO_ICNS="/private/tmp/PretendCo.icns"
 
 # The title of the message that will be displayed to the user. Not too long, or it'll get clipped.
-PROMPT_HEADING="FileVault key needs repair"
+PROMPT_HEADING="FileVault key repair"
 
 # The body of the message that will be displayed to the user.
-PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for $COMPANY_NAME IT to be able to recover your hard drive in case of emergency.
+PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for PretendCo IT to be able to recover your hard drive in case of emergency.
 
 Click the Next button below, then enter your Mac's password when prompted."
 
@@ -110,14 +107,14 @@ echo "Alerting user ${userName} about incoming password prompt..."
 
 # Get the logged in user's password via a prompt
 echo "Prompting ${userName} for their Mac password..."
-userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Please enter your Mac password:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
 
 # Thanks to James Barclay for this password validation loop.
 TRY=1
 until dscl /Search -authonly "$userName" "$userPass" &> /dev/null; do
     (( TRY++ ))
     echo "Prompting ${userName} for their Mac password (attempt $TRY)..."
-    userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${COMPANY_NAME//\"/\\\"}"' IT encryption key repair" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
+    userPass="$(/usr/bin/sudo -u "$userName" /usr/bin/osascript -e 'tell application "System Events"' -e 'with timeout of 86400 seconds' -e 'display dialog "Sorry, that password was incorrect. Please try again:" default answer "" with title "'"${PROMPT_HEADING//\"/\\\"}"'" with text buttons {"OK"} default button 1 with hidden answer with icon file "'"${LOGO_ICNS//\"/\\\"}"'"' -e 'return text returned of result' -e 'end timeout' -e 'end tell')"
     if [[ $TRY -ge 5 ]]; then
         echo "[ERROR] Password prompt unsuccessful after 5 attempts."
         exit 1007
