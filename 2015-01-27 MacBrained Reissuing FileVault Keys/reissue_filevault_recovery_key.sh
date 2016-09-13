@@ -129,8 +129,8 @@ echo "Unloading FDERecoveryAgent..."
 launchctl unload /System/Library/LaunchDaemons/com.apple.security.FDERecoveryAgent.plist
 
 echo "Issuing new recovery key..."
-# Translate XML reserved characters to XML friendly representations. 
-# Thanks @AggroBoy! - https://gist.github.com/AggroBoy/1242257 
+# Translate XML reserved characters to XML friendly representations.
+# Thanks @AggroBoy! - https://gist.github.com/AggroBoy/1242257
 userPassXMLFriendly=$(echo "$userPass" | sed -e 's~&~\&amp;~g' -e 's~<~\&lt;~g' -e 's~>~\&gt;~g' -e 's~\"~\&quot;~g' -e "s~\'~\&apos;~g" )
 fdesetup changerecovery -norecoverykey -verbose -personal -inputplist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
