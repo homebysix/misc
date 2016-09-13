@@ -32,13 +32,15 @@ LOGO_ICNS="/private/tmp/PretendCo.icns"
 PROMPT_TITLE="FileVault key repair"
 
 # The body of the message that will be displayed before prompting the user for
-# their password. Can be multiple lines.
+# their password. All message strings below can be multiple lines.
 PROMPT_MESSAGE="Your Mac's FileVault encryption key needs to be regenerated in order for PretendCo IT to be able to recover data from your hard drive in case of emergency.
 
 Click the Next button below, then enter your Mac's password when prompted."
 
 # The body of the message that will be displayed after 5 incorrect passwords.
-FORGOT_PW_MESSAGE="Please contact the Help Desk at 555-1212 if you need to reset your Mac's password."
+FORGOT_PW_MESSAGE="You made five incorrect password attempts.
+
+Please contact the Help Desk at 555-1212 for help with your Mac password."
 
 # The body of the message that will be displayed after successful completion.
 SUCCESS_MESSAGE="Thank you! Your FileVault key has been regenerated."
