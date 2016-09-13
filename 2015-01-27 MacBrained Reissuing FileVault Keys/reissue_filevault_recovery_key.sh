@@ -58,7 +58,7 @@ if [[ ! -f "$LOGO_ICNS" ]]; then
     BAIL=true
 fi
 # Convert POSIX path of logo icon to Mac path for AppleScript
-LOGO_ICNS="$(/usr/bin/osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
+LOGO_ICNS="$(osascript -e 'tell application "System Events" to return POSIX file "'"$LOGO_ICNS"'" as text')"
 
 # Bail out if jamfHelper doesn't exist.
 jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
@@ -71,16 +71,16 @@ fi
 # https://github.com/JAMFSupport/FileVault2_Scripts/blob/master/reissueKey.sh
 
 # Check the OS version.
-OS_MAJOR=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $1}')
-OS_MINOR=$(/usr/bin/sw_vers -productVersion | awk -F . '{print $2}')
+OS_MAJOR=$(sw_vers -productVersion | awk -F . '{print $1}')
+OS_MINOR=$(sw_vers -productVersion | awk -F . '{print $2}')
 if [[ "$OS_MAJOR" -ne 10 || "$OS_MINOR" -lt 9 ]]; then
     echo "[ERROR] OS version not 10.9+ or OS version unrecognized."
-    /usr/bin/sw_vers -productVersion
+    sw_vers -productVersion
     BAIL=true
 fi
 
 # Check to see if the encryption process is complete
-FV_STATUS="$(/usr/bin/fdesetup status)"
+FV_STATUS="$(fdesetup status)"
 if grep -q "Encryption in progress" <<< "$FV_STATUS"; then
     echo "[ERROR] The encryption process is still in progress."
     echo "$FV_STATUS"
@@ -96,10 +96,10 @@ elif ! grep -q "FileVault is On" <<< "$FV_STATUS"; then
 fi
 
 # Get the logged in user's name
-CURRENT_USER="$(/usr/bin/stat -f%Su /dev/console)"
+CURRENT_USER="$(stat -f%Su /dev/console)"
 
 # This first user check sees if the logged in account is already authorized with FileVault 2
-FV_USERS="$(/usr/bin/fdesetup list)"
+FV_USERS="$(fdesetup list)"
 if ! egrep -q "^${CURRENT_USER}," <<< "$FV_USERS"; then
     echo "[ERROR] $CURRENT_USER is not on the list of FileVault enabled users:"
     echo "$FV_USERS"
