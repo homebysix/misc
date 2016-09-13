@@ -17,7 +17,7 @@
 ###
 
 
-################################## VARIABLES ###################################
+################################## VARIABLES ##################################
 
 # Your company's logo, in PNG format. (For use in jamfHelper messages.)
 # Use standard UNIX path format:  /path/to/file.png
@@ -27,7 +27,8 @@ LOGO_PNG="/Library/Application Support/PretendCo/logo@512px.png"
 # Use standard UNIX path format:  /path/to/file.icns
 LOGO_ICNS="/private/tmp/PretendCo.icns"
 
-# The title of the message that will be displayed to the user. Not too long, or it'll get clipped.
+# The title of the message that will be displayed to the user.
+# Not too long, or it'll get clipped.
 PROMPT_HEADING="FileVault key repair"
 
 # The body of the message that will be displayed to the user.
@@ -39,15 +40,17 @@ Click the Next button below, then enter your Mac's password when prompted."
 jamfHelper="/Library/Application Support/JAMF/bin/jamfHelper.app/Contents/MacOS/jamfHelper"
 
 
-################################################################################
-######################### DO NOT EDIT BELOW THIS LINE ##########################
-################################################################################
+###############################################################################
+######################### DO NOT EDIT BELOW THIS LINE #########################
+###############################################################################
 
 
-######################## VALIDATION AND ERROR CHECKING #########################
+######################## VALIDATION AND ERROR CHECKING ########################
 
 
-# Suppress errors for the duration of this script.
+# Suppress errors for the duration of this script. (This prevents Casper from
+# marking a policy as "failed" if the words "fail" or "error" inadvertently
+# appear in the script output.)
 exec 2>/dev/null
 
 # Make sure the custom logo has been received successfully
@@ -98,7 +101,7 @@ if [[ $? -ne 0 ]]; then
     exit 1002
 fi
 
-################################# MAIN PROCESS #################################
+################################ MAIN PROCESS #################################
 
 # Display a branded prompt explaining the password prompt.
 echo "Alerting user $CURRENT_USER about incoming password prompt..."
