@@ -197,7 +197,6 @@ fi
 
 # Reload FDERecoveryAgent, if it was unloaded earlier.
 if [[ "$FDERA" == "true" ]]; then
-    sleep 2
     # Only if it wasn't automatically reloaded by `fdesetup`.
     if ! launchctl list | grep -q "com.apple.security.FDERecoveryAgent"; then
         echo "Loading FDERecoveryAgent..."
