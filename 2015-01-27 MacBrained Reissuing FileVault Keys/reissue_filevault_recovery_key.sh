@@ -5,14 +5,14 @@
 #            Name:  reissue_filevault_recovery_key.sh
 #     Description:  This script is intended to run on Macs which no longer have
 #                   a valid recovery key in the JSS. It prompts users to enter
-#                   their Mac password, and uses this password to send a new
-#                   FileVault key to the JSS. The "redirect FileVault keys to
-#                   JSS" configuration profile must already be deployed in order
-#                   for this script to work correctly.
+#                   their Mac password, and uses this password to generate a
+#                   new FileVault key and escrow with the JSS. The "redirect
+#                   FileVault keys to JSS" configuration profile must already
+#                   be deployed in order for this script to work correctly.
 #          Author:  Elliot Jordan <elliot@lindegroup.com>
 #         Created:  2015-01-05
-#   Last Modified:  2016-04-01
-#         Version:  1.5
+#   Last Modified:  2016-09-13
+#         Version:  1.6
 #
 ###
 
