@@ -1,3 +1,5 @@
+<p style="text-align: center; font-weight: bold; border: 1px solid red; background: #ffe4e5; padding: 20px;">The documentation and script for this presentation have a new home:<br /><a style="font-size: 1.3em;" href="https://github.com/homebysix/casper-filevault-reissue">https://github.com/homebysix/casper-filevault-reissue</a></p>
+
 # Reissuing FileVault keys with the Casper Suite
 
 _Presented by Elliot Jordan, Senior Consultant, [Linde Group](http://www.lindegroup.com)_<br />_MacBrained - January 27, 2015 - San Francisco, CA_
