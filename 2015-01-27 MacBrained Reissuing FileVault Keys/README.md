@@ -1,4 +1,4 @@
-[![Pointer to new GitHub repo](images/new_home.png)](https://github.com/homebysix/casper-filevault-reissue)
+[![Pointer to new GitHub repo](images/new_home.png)](https://github.com/homebysix/jss-filevault-reissue)
 
 # Reissuing FileVault keys with the Casper Suite
 
