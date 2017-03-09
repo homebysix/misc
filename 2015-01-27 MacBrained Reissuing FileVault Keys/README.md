@@ -13,7 +13,7 @@ _Presented by Elliot Jordan, Senior Consultant, [Linde Group](http://www.lindegr
     - [Step One: Configuration Profile](#step-one-configuration-profile)
     - [Step Two: Smart Group](#step-two-smart-group)
     - [Step Three: Script](#step-three-script)
-        - [reissue_filevault_recovery_key.sh Example Script](https://github.com/homebysix/misc/blob/master/2015-01-27%20MacBrained%20Reissuing%20FileVault%20Keys/reissue_filevault_recovery_key.sh)
+        - [reissue_filevault_recovery_key.sh Example Script](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh)
     - [Step Four: Policy](#step-four-policy)
     - [Follow Through](#follow-through)
 
@@ -36,8 +36,8 @@ __You can use a policy to generate a new FileVault key and upload to JSS.__
 
 1. A configuration profile ensures that all FileVault keys are escrowed with the JSS.
 2. A smart group determines which computers lack valid individual recovery keys.
-3. Customize the __reissue_filevault_recovery_key.sh__ for your environment.
-4. Create a policy that deploys the __reissue_filevault_recovery_key.sh__ script to the computers in the smart group.
+3. Customize the __[reissue_filevault_recovery_key.sh](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh)__ for your environment.
+4. Create a policy that deploys the __[reissue_filevault_recovery_key.sh](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh)__ script to the computers in the smart group.
 
 ![Notification](images/notification.png)
 
@@ -72,9 +72,9 @@ __A smart group named “FileVault encryption key is invalid or unknown” selec
 
 ### Step Three: Script
 
-__The reissue_filevault_recovery_key.sh script runs on each affected Mac.__
+__The [reissue_filevault_recovery_key.sh](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh) script runs on each affected Mac.__
 
-- Start by customizing the __reissue_filevault_recovery_key.sh__ script as needed for your environment.
+- Start by customizing the __[reissue_filevault_recovery_key.sh](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh)__ script as needed for your environment.
     - __Email__ affected employees to give them a heads up.
     - Use __jamfHelper__ to announce the upcoming password prompt.
     - Add __logo__ to AppleScript password prompt.
@@ -95,7 +95,7 @@ __A policy called “Reissue invalid or missing FileVault recovery key” runs t
 - Packages
     - __AppleScriptCustomIcon.dmg__ (loads /tmp/Pinterest.icns)
 - Scripts
-    - __reissue_filevault_recovery_key.sh__ (priority: __After__)
+    - __[reissue_filevault_recovery_key.sh](https://github.com/homebysix/jss-filevault-reissue/blob/master/reissue_filevault_recovery_key.sh)__ (priority: __After__)
 - Scope
     - Smart Group: __FileVault encryption key is invalid or unknown__
 
