@@ -37,8 +37,11 @@
 - [AWS Command Line Interface](https://aws.amazon.com/cli/)
 - [MunkiPkg](https://github.com/munki/munki-pkg)
 - [Outset](https://github.com/chilcote/outset)
-- [GitLab Jobs API - Download a single artifact file by job ID](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-by-job-id)
+
+A couple things I had to skip due to time:
+
 - [GitLabArtifact AutoPkg Recipes](https://github.com/autopkg/homebysix-recipes/tree/master/GitLabArtifact)
+- [GitLab Jobs API - Download a single artifact file by job ID](https://docs.gitlab.com/ee/api/jobs.html#download-a-single-artifact-file-by-job-id)
 
 You might also like:
 
