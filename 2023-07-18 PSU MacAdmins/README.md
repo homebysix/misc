@@ -126,6 +126,7 @@
 
 ## Creating new recipes
 
+- [Anthony’s Mac Labs Blog | 📦 Generic App-Packaging Recipes for AutoPkg](https://maclabs.jazzace.ca/2018/11/17/generic-packaging-recipes-for-autopkg.html)
 - [Recipe Robot](https://github.com/homebysix/recipe-robot)
     - [Video tutorial: Intro to Recipe Robot](https://www.youtube.com/watch?v=E531jJLovhc&list=PLK1ZziC_XFWoDnSYU3__WRQCRpXA2fhXq&index=2)
     - [Using Recipe Robot to create child recipes for existing parent recipes](https://youtu.be/5VKDzY8bBxI?t=2829)
@@ -137,11 +138,22 @@
 - [Patterns.app](https://krillapps.com/patterns/)
 - [regex101: build, test, and debug regex](https://regex101.com/)
 - [Ben Toms: Digging for download URLs for AutoPkg recipes](https://macmule.com/2021/06/14/macdevopsyvr-2021-digging-for-download-urls-for-autopkg-recipes/)
+- Text editors:
+    - [BBEdit](https://www.barebones.com/products/bbedit/)
+    - [Visual Studio Code](https://code.visualstudio.com/)
+    - [Sublime Text](https://www.sublimetext.com/)
+    - [Nova](https://nova.app/)
 - [BBEdit AutoPkg Clippings](https://github.com/jazzace/BBEdit-AutoPkg-Clippings)
+- [Code Spell Checker - Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=streetsidesoftware.code-spell-checker)
+- [Pre-Commit Hooks for Mac Admins](https://github.com/homebysix/pre-commit-macadmin)
+- [Elliot Jordan - Using pre-commit to validate AutoPkg recipes](https://www.elliotjordan.com/posts/pre-commit-02-autopkg/)
+- [Python Black](https://pypi.org/project/black/)
+- [Elliot Jordan: Linters, Hooks, and Pipelines – Automation to Save Your Bacon](https://www.youtube.com/watch?v=mYKEM9Gplks&feature=youtu.be)
 - [EndOfCheckPhase convention](https://github.com/autopkg/n8felton-recipes/pull/109)
 - [FossHub and AutoPkg](https://macmule.com/2019/03/17/fosshub-autopkg/)
 - [Giving feedback to devs about SSL](https://twitter.com/homebysix/status/714508127228403712)
 - [`%NAME%` convention](https://github.com/autopkg/zachtarr-recipes/pull/1)
+- [AutoPkg Wiki: Recipe Writing Guidelines](https://github.com/autopkg/autopkg/wiki/Recipe-Writing-Guidelines)
 - [Product Hunt: Mac apps](https://www.producthunt.com/topics/mac)
 
 ## Testing your recipes
@@ -177,4 +189,4 @@
 
 ### Coming attractions
 
-- [Use cached index instead of GitHub API for recipe search by homebysix · Pull Request #862 · autopkg/autopkg](https://github.com/autopkg/autopkg/pull/862)
+- [AutoPkg pull requests](https://github.com/autopkg/autopkg/pulls)
