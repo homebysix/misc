@@ -14,6 +14,7 @@
     - [Writing custom processors](#writing-custom-processors)
     - [Contributing to AutoPkg](#contributing-to-autopkg)
     - [Coming attractions](#coming-attractions)
+- [Wrap up](#wrap-up)
 
 **Elliot Jordan, Netflix**
 
@@ -108,6 +109,7 @@
 - URLs for searching recipes in AutoPkg org:
     - https://github.com/search?type=code&q=org%3Aautopkg+firefox
     - https://github.com/search?q=org%3Aautopkg+firefox+AND+.pkg.recipe&type=code
+- [plist-yaml-plist conversion tool](https://github.com/grahampugh/plist-yaml-plist)
 - Comparing recipes:
     - [autopkg/recipes/Mozilla/Firefox.pkg.recipe](https://github.com/autopkg/recipes/blob/master/Mozilla/Firefox.pkg.recipe)
     - [autopkg/rtrouton-recipes/Firefox/Firefox.pkg.recipe](https://github.com/autopkg/rtrouton-recipes/blob/master/Firefox/Firefox.pkg.recipe)
@@ -192,3 +194,7 @@
 ### Coming attractions
 
 - [AutoPkg pull requests](https://github.com/autopkg/autopkg/pulls)
+
+## Wrap up
+
+- [The curse of being good in IT](https://www.bitecode.dev/p/the-curse-of-being-good-in-it)
