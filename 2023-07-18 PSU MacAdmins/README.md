@@ -119,6 +119,8 @@
 - [AutoPkg Wiki: Parent recipe trust information](https://github.com/autopkg/autopkg/wiki/AutoPkg-and-recipe-parent-trust-info)
 - [Anthony’s Mac Labs Blog | 📦 Multiple AutoPkg Recipes or Just Override?](https://maclabs.jazzace.ca/2019/08/31/multiple-recipes-or-just-override.html)
 - [homebysix-recipes/GitHub/GitHubDesktop.munki.recipe](https://github.com/autopkg/homebysix-recipes/blob/master/GitHub/GitHubDesktop.munki.recipe)
+- [AutoPkgr Wiki: Scheduling and Notifications](https://github.com/lindegroup/autopkgr/wiki/Scheduling-and-Notifications)
+- [Running AutoPkg in Github Actions](https://engineering.gusto.com/running-autopkg-in-github-actions/)
 
 ## Specific recipe types
 
