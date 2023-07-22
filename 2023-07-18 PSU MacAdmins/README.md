@@ -32,6 +32,8 @@
 
 - [PSU Session Feedback](https://bit.ly/psumac2023-102)
 - [Links and References](https://tinyurl.com/AutoPkgWorkshop) (this page)
+- [Slides](AutoPkg%20In%20Depth.pdf)
+- [Raycast download recipe creation demo](Raycast%20Download%20Recipe%20Creation.mp4)
 
 ## AutoPkg prerequisites and basics
 
