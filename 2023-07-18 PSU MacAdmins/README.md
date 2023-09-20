@@ -1,5 +1,7 @@
 # AutoPkg in Depth: Understanding, Selecting, Creating, and Maintaining Recipes <!-- omit in toc -->
 
+PSU MacAdmins Conference 2023 — July 18, 2023
+
 - [AutoPkg prerequisites and basics](#autopkg-prerequisites-and-basics)
 - [Recipe reading and literacy](#recipe-reading-and-literacy)
     - [Recipes](#recipes)
