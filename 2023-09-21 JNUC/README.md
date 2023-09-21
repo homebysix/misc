@@ -18,3 +18,5 @@ Jamf Nation User Conference 2023 — September 21, 2023
 - [Escrow Buddy Usage Survey](https://docs.google.com/forms/d/e/1FAIpQLSdJvvlIwE-M0JsmR38_Z-m24f-L75ZjGok8edm_wvgN3-QDVA/viewform)
 - [Mac Admins Open Source on GitHub](https://github.com/macadmins)
 - [PSU MacAdmins 2023: Mac Admins Open Source Panel: Rich Trouton, Nate Walck, Greg Neagle, Chris Dawe, Elliot Jordan, and Emily Kausalik](https://www.youtube.com/watch?v=REyEYsgz5MI)
+- [Travelling Tech Guy: Escrowing and re-issuing FileVault Personal Recovery Keys](https://travellingtechguy.blog/escrowing-and-re-issuing-filevault-personal-recovery-keys/)
+- [Elliot Jordan: Escrow Buddy with logout reminders](https://www.elliotjordan.com/posts/escrow-buddy-reminders/)
