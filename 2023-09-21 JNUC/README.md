@@ -8,6 +8,7 @@ Jamf Nation User Conference 2023 — September 21, 2023
 ---
 
 - [homebysix/jss-filevault-reissue](https://github.com/homebysix/jss-filevault-reissue) (the old way - don't use this)
+- [Elliot Jordan: Escrowing new FileVault keys to MDM without password prompts](https://www.elliotjordan.com/posts/filevault-reissue/)
 - [Apple Developer Documentation: Authorization Plug-ins](https://developer.apple.com/documentation/security/authorization_plug-ins)
 - [Crypt](https://github.com/grahamgilbert/crypt/)
 - [Escrow Buddy](https://github.com/macadmins/escrow-buddy/)
